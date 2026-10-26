@@ -38,3 +38,16 @@ def rolling_origin_splits(
         out.append(TimeSplit(train_end, val_start, val_end))
         train_end_idx += step
     return out
+
+
+def rolling_origin_folds(n: int, horizon: int = 24, min_train: int = 48, step: int = 6) -> list[int]:
+    """Return forecast origins: train is [0, origin), test is [origin, origin + horizon).
+    
+    Origins are anchored at the end so the last fold ends exactly at n.
+    """
+    if horizon <= 0 or min_train <= 0 or step <= 0:
+        raise ValueError("horizon, min_train and step must be positive")
+    last = n - horizon
+    if last < min_train:
+        raise ValueError("not enough history for a single fold")
+    return list(range(last, min_train - 1, -step))[::-1]

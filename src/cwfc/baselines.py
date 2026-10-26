@@ -18,3 +18,12 @@ def seasonal_naive_forecast(train: pd.DataFrame, template: pd.DataFrame, target:
         raise ValueError("not enough history for seasonal-naive forecast")
     forecast = [float(values[-season_length + (i % season_length)]) for i in range(len(template))]
     return pd.Series(forecast, index=template.index, dtype=float)
+
+
+def moving_average_forecast(train: pd.DataFrame, template: pd.DataFrame, target: str, window: int) -> pd.Series:
+    if window <= 0:
+        raise ValueError("window must be positive")
+    if len(train) < window:
+        raise ValueError("not enough history for moving-average forecast")
+    value = float(train[target].iloc[-window:].mean())
+    return pd.Series(value, index=template.index, dtype=float)
