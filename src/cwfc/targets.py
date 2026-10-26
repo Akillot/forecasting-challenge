@@ -3,9 +3,14 @@ import pandas as pd
 
 
 def build_targets(cpu: pd.DataFrame) -> pd.DataFrame:
-      """Aggregate VM-level readings into one row per timestamp."""
+      """Aggregate VM-level readings into one row per timestamp.
+
+      Duplicate readings of the same VM at the same timestamp are averaged first,
+      so every VM counts once in both targets.
+      """
       valid = cpu.dropna(subset=["avg_cpu"])
-      grouped = valid.groupby("timestamp")
+      per_vm = valid.groupby(["timestamp", "vm_id"], as_index=False)["avg_cpu"].mean()
+      grouped = per_vm.groupby("timestamp")
       out = pd.DataFrame({
           "active_vm_count": grouped["vm_id"].nunique(),
           "aggregate_cpu_utilization": grouped["avg_cpu"].mean(),
