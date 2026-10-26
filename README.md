@@ -112,6 +112,11 @@ VM at one timestamp are averaged first, so each VM counts once in both targets.
 | **AR(1)** | **0.201** | 0.153 | **0.183** |
 | persistence | 0.215 | **0.147** | 0.185 |
 | train mean | 0.209 | 0.175 | 0.211 |
+| lag regression* | 0.221 | 0.096 | 0.121 |
+
+\* Added after the holdout evaluation as a comparison only. It is the worst on
+validation but the best on the single holdout window; switching to it would mean
+selecting on the test set, so AR(1) stays the final model.
 
 AR(1) has the best validation MAE and is never the worst in any fold.
 On the holdout, persistence is 4% better on MAE because the window starts in a
@@ -125,10 +130,18 @@ percentile) by ~0.4 pp.
 (≈ +4.7% headroom), the 95th percentile of validation under-forecast errors.
 This margin covered all 24 holdout points.
 
-Details are in the notebooks and in the final report.
+Details are in the notebooks and in the [final report](reports/final_report.md).
 
 ## Data source
 
 Microsoft Azure Public Dataset V2 —
 https://github.com/Azure/AzurePublicDataset.
 The data is not committed to this repository.
+
+## Limitations and next steps
+
+- The window is 11 h, so daily seasonality cannot be learned; a longer trace is needed.
+- AR(1) under-forecasts peaks; a horizon-dependent hybrid (persistence for the first ~30 min) looked better on validation but was not applied, to keep the holdout clean.
+- Capacity should ultimately be planned on `max_cpu` and per segment (Interactive VMs).
+
+See section 9 of the [final report](reports/final_report.md) for the full discussion.
