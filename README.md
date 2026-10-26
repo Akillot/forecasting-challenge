@@ -70,13 +70,16 @@ src/cwfc/
   targets.py      build the two target series; 110/24 train/holdout split
   validation.py   rolling-origin folds inside the training window
   baselines.py    persistence, moving average, seasonal-naive
-  models.py       AR(1) mean-reverting model (final model)
+  models.py       AR(1) (final model) and lag-feature regression
   metrics.py      MAE, RMSE, sMAPE, normalized MAE
   predict.py      CLI that writes predictions.csv
 notebooks/
   01_data_audit.ipynb    data quality, distributions, segments, target series
   02_forecasting.ipynb   validation, model selection, holdout, errors, capacity policy
 tests/                   unit tests, including a holdout-leakage test
+reports/
+  final_report.md        final report
+  figures/               figures used in the report
 project_info/            original assignment and dataset contract
 ```
 
